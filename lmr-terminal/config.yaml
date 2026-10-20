@@ -1,0 +1,65 @@
+---
+name: "LMR Terminal"
+description: "Web terminal with the OpenCode agent, powered by your Local Model Router (LMR)"
+version: "0.1.0"
+slug: "lmr_terminal"
+init: false
+
+# No prebuilt image: the Supervisor builds the Dockerfile locally on install.
+arch:
+  - aarch64
+  - amd64
+
+url: "https://github.com/Dizzyobeah/home-assistant-addons"
+
+# Web interface configuration
+ingress: true
+ingress_port: 7681
+panel_icon: mdi:code-braces
+panel_title: "LMR Terminal"
+panel_admin: true
+
+ports:
+  7681/tcp: null
+ports_description:
+  7681/tcp: "Direct web terminal access. Not needed for ingress, and NOT password-protected: anyone who can reach this port gets a root shell in the container, with no Home Assistant login. Leave unset unless the port is firewalled."
+
+# lmr_url and lmr_api_key are in the schema but deliberately not in options:
+# that makes them required, so the add-on refuses to start until they are set.
+options:
+  lmr_model: "auto"
+  auto_launch: true
+  working_directory: ""
+  ha_smart_context: true
+  enable_ha_mcp: true
+  ha_mcp_version: "7.11.0"
+  persistent_apk_packages: []
+  persistent_pip_packages: []
+schema:
+  lmr_url: url
+  lmr_api_key: password
+  lmr_model: str?
+  auto_launch: bool?
+  working_directory: str?
+  ha_smart_context: bool?
+  enable_ha_mcp: bool?
+  ha_mcp_version: str?
+  persistent_apk_packages:
+    - str
+  persistent_pip_packages:
+    - str
+
+map:
+  - config:rw            # Home Assistant configuration files
+  - all_addon_configs:rw # Other add-ons' config directories (/addon_configs)
+  - share:rw             # Shared folder between add-ons and HA
+
+# hassio_api + role manager: ha-context lists installed add-ons (/addons)
+# homeassistant_api: the /core/api/* proxy used by ha-context and ha-mcp
+hassio_api: true
+hassio_role: manager
+homeassistant_api: true
+
+startup: services
+
+webui: http://[HOST]:[PORT:7681]/
