@@ -9,6 +9,8 @@ RUN apk add --no-cache \
     git \
     jq \
     nano \
+    nodejs \
+    npm \
     py3-aiohttp \
     py3-beautifulsoup4 \
     py3-pip \
@@ -29,21 +31,11 @@ RUN pip3 install --no-cache-dir --break-system-packages uv==0.11.28
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
-# OpenCode, as the native musl binary straight from the npm registry (curl+tar
-# instead of npm, so aarch64 cross-builds under QEMU don't need Node). x86_64
-# uses the baseline build, which runs on CPUs without AVX (e.g. Proxmox kvm64).
-# Pinned: opencode-config.sh targets this version's config schema; bump deliberately.
-ARG OPENCODE_VERSION=1.19.3
-RUN case "$(apk --print-arch)" in \
-        x86_64)  pkg="opencode-linux-x64-baseline-musl" ;; \
-        aarch64) pkg="opencode-linux-arm64-musl" ;; \
-        *) echo "Unsupported architecture: $(apk --print-arch)" >&2; exit 1 ;; \
-    esac \
-    && version="$(curl -fsSL "https://registry.npmjs.org/${pkg}/${OPENCODE_VERSION}" | jq -r .version)" \
-    && curl -fsSL "https://registry.npmjs.org/${pkg}/-/${pkg}-${version}.tgz" \
-        | tar -xz -C /tmp package/bin/opencode \
-    && install -m 0755 /tmp/package/bin/opencode /usr/local/bin/opencode \
-    && rm -rf /tmp/package
+# Gemini CLI from npm. Pinned: gemini-settings.sh targets this version's
+# settings schema; bump deliberately.
+ARG GEMINI_CLI_VERSION=0.64.0
+RUN npm install -g --no-fund --no-audit "@google/gemini-cli@${GEMINI_CLI_VERSION}" \
+    && npm cache clean --force
 
 WORKDIR /config
 

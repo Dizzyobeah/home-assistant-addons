@@ -6,8 +6,10 @@ Home Assistant add-ons that give you a browser terminal with the
 - **LMR Terminal**: the only LLM backend is your own
   [Local Model Router (LMR)](https://github.com/Dizzyobeah/lmr), so every
   request goes to your local Ollama models.
-- **Gemini Terminal**: the only LLM backend is Google Gemini. Needs nothing
-  but a Gemini API key.
+- **Gemini Terminal**: runs Google's
+  [Gemini CLI](https://github.com/google-gemini/gemini-cli) instead of
+  OpenCode. Needs nothing but a Gemini API key, and is light enough for a
+  2 GB Raspberry Pi.
 
 ## Installation
 
@@ -27,7 +29,7 @@ See [lmr-terminal/DOCS.md](lmr-terminal/DOCS.md) and
 ## Credits
 
 Based on [heytcass/home-assistant-addons](https://github.com/heytcass/home-assistant-addons)
-(MIT). The terminal agent is OpenCode; the LLM backends are LMR and Google Gemini.
+(MIT). The terminal agents are OpenCode (LMR) and Gemini CLI (Gemini).
 
 ## License
 

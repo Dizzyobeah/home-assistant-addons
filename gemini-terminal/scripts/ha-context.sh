@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# HA Smart Context — generates an AGENTS.md with Home Assistant context
-# OpenCode auto-loads ~/.config/opencode/AGENTS.md, giving every session HA awareness
+# HA Smart Context — generates a GEMINI.md with Home Assistant context
+# Gemini CLI auto-loads ~/.gemini/GEMINI.md, giving every session HA awareness
 #
 # Usage:
 #   ha-context          Generate medium-detail context (default)
@@ -9,7 +9,7 @@
 #   ha-context --help   Show usage
 
 SUPERVISOR_URL="http://supervisor"
-OUTPUT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/AGENTS.md"
+OUTPUT_FILE="$HOME/.gemini/GEMINI.md"
 FULL_MODE=false
 
 # Parse arguments
@@ -26,12 +26,12 @@ while [[ $# -gt 0 ]]; do
         --help)
             echo "Usage: ha-context [OPTIONS]"
             echo ""
-            echo "Generate Home Assistant context for OpenCode sessions."
-            echo "Writes an AGENTS.md file that OpenCode automatically loads."
+            echo "Generate Home Assistant context for Gemini CLI sessions."
+            echo "Writes a GEMINI.md file that Gemini CLI automatically loads."
             echo ""
             echo "Options:"
             echo "  --full       Include entity ID listings (detailed mode)"
-            echo "  --output F   Write to file F instead of ~/.config/opencode/AGENTS.md"
+            echo "  --output F   Write to file F instead of ~/.gemini/GEMINI.md"
             echo "  --help       Show this help"
             exit 0
             ;;

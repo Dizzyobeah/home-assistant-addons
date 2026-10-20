@@ -1,7 +1,6 @@
 #!/usr/bin/with-contenv bashio
 
-# Gemini Terminal: the OpenCode agent in a browser terminal (ttyd + tmux), using
-# Google Gemini as its only LLM backend.
+# Gemini Terminal: Google's Gemini CLI agent in a browser terminal (ttyd + tmux).
 #
 # Startup philosophy: everything the terminal needs is baked into the image,
 # and nothing on the boot path may depend on the network or block on input.
@@ -9,7 +8,7 @@
 set -e
 set -o pipefail
 
-# HOME and XDG dirs live in /data so OpenCode sessions and settings persist
+# HOME and XDG dirs live in /data so Gemini CLI sessions and settings persist
 init_environment() {
     export HOME="/data/home"
     export XDG_CONFIG_HOME="/data/.config"
@@ -17,7 +16,7 @@ init_environment() {
     export XDG_STATE_HOME="/data/.local/state"
     export XDG_DATA_HOME="/data/.local/share"
 
-    if ! mkdir -p "$HOME" "$XDG_CONFIG_HOME/opencode" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; then
+    if ! mkdir -p "$HOME/.gemini" "$XDG_CACHE_HOME" "$XDG_STATE_HOME" "$XDG_DATA_HOME"; then
         bashio::log.error "Failed to create directories in /data"
         exit 1
     fi
@@ -45,15 +44,17 @@ setup_commands() {
         || echo "unknown" > /opt/scripts/addon-version
 }
 
-# The API key reaches OpenCode through the environment only (the config file
-# references it as {env:GEMINI_API_KEY}), so it never lands in /data or backups.
+# The API key reaches Gemini CLI through the environment only, so it never
+# lands in /data or backups.
 # The value itself is never logged.
 export_gemini_env() {
     export GEMINI_API_KEY
     GEMINI_API_KEY=$(bashio::config 'gemini_api_key')
     GEMINI_MODEL=$(bashio::config 'gemini_model' 'gemini-flash-latest')
-    GEMINI_SMALL_MODEL=$(bashio::config 'gemini_small_model' 'gemini-flash-lite-latest')
-    bashio::log.info "Using Gemini model ${GEMINI_MODEL} (small: ${GEMINI_SMALL_MODEL})"
+    bashio::log.info "Using Gemini model ${GEMINI_MODEL}"
+    # Gemini CLI otherwise re-execs itself with a bigger heap: a second Node
+    # process costing ~130 MB, which 2 GB hosts can't spare.
+    export GEMINI_CLI_NO_RELAUNCH=true
 }
 
 # Warn early (in the add-on log) if Google rejects the key or the model id.
@@ -141,10 +142,10 @@ start_web_terminal() {
     local port=7681 session_command workdir
 
     if [ "$(bashio::config 'auto_launch' 'true')" = "true" ]; then
-        session_command="opencode"
+        session_command="gemini"
     else
         # Shell mode: banner + interactive bash, still inside tmux for
-        # reconnect persistence. Run 'opencode' manually when ready.
+        # reconnect persistence. Run 'gemini' manually when ready.
         session_command="/usr/local/bin/welcome --shell"
     fi
     workdir=$(get_working_directory)
@@ -171,12 +172,13 @@ start_web_terminal() {
 main() {
     bashio::log.info "Starting Gemini Terminal add-on..."
 
-    # shellcheck source=scripts/opencode-config.sh
-    source /opt/scripts/opencode-config.sh
+    # shellcheck source=scripts/gemini-settings.sh
+    source /opt/scripts/gemini-settings.sh
 
     init_environment
     export_gemini_env
-    write_opencode_config "$XDG_CONFIG_HOME/opencode/opencode.json" "$GEMINI_MODEL" "$GEMINI_SMALL_MODEL"
+    GEMINI_SETTINGS="$HOME/.gemini/settings.json"
+    write_gemini_settings "$GEMINI_SETTINGS" "$GEMINI_MODEL"
     check_gemini
     setup_commands
     install_persistent_packages

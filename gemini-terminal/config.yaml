@@ -1,7 +1,7 @@
 ---
 name: "Gemini Terminal"
-description: "Web terminal with the OpenCode agent, powered by Google Gemini"
-version: "0.1.0"
+description: "Web terminal with Google's Gemini CLI agent for investigating Home Assistant"
+version: "0.2.0"
 slug: "gemini_terminal"
 init: false
 
@@ -28,7 +28,6 @@ ports_description:
 # that makes it required, so the add-on refuses to start until it is set.
 options:
   gemini_model: "gemini-flash-latest"
-  gemini_small_model: "gemini-flash-lite-latest"
   auto_launch: true
   working_directory: ""
   ha_smart_context: true
@@ -39,7 +38,6 @@ options:
 schema:
   gemini_api_key: password
   gemini_model: str?
-  gemini_small_model: str?
   auto_launch: bool?
   working_directory: str?
   ha_smart_context: bool?

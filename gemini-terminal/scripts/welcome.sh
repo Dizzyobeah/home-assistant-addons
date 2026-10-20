@@ -14,7 +14,7 @@ version=$(cat /opt/scripts/addon-version 2>/dev/null || echo "unknown")
 echo ""
 echo -e "  ${BLUE}Gemini Terminal${NC}  ${DIM}v${version} · Home Assistant add-on${NC}"
 echo ""
-echo -e "  ${WHITE}opencode${NC}          start the OpenCode agent  ${DIM}(-c continue last session)${NC}"
+echo -e "  ${WHITE}gemini${NC}            start the Gemini CLI agent  ${DIM}(/chat to save and resume)${NC}"
 echo -e "  ${WHITE}persist-install${NC}   install apk/pip packages that survive restarts"
 echo -e "  ${WHITE}ha-context${NC}        refresh the Home Assistant context file"
 echo ""
