@@ -11,7 +11,7 @@ The add-on won't start until these two options are set:
 
 | Option | Example | Notes |
 |--------|---------|-------|
-| `lmr_url` | `http://192.168.1.20:8080` | Base URL of LMR. `/v1` is appended automatically if missing. |
+| `lmr_url` | `http://192.168.1.20:8080` | Base URL of LMR. `/v1` is added if missing, and a pasted `/v1/chat/completions` endpoint is trimmed back to the base. |
 | `lmr_api_key` | `lmr_...` | Create one in the LMR admin UI (`<lmr_url>/admin` → **API Keys**). It's shown only once. |
 
 The key is passed to OpenCode through the environment only. It's never written

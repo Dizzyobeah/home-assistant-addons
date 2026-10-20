@@ -2,11 +2,14 @@
 # Pure helpers for writing OpenCode's config (no bashio, so they can be tested
 # outside the add-on: `bash scripts/opencode-config.sh --test`).
 
-# "http://host:8080/" -> "http://host:8080/v1"; an existing /v1 is kept
+# Accepts a base URL or a pasted endpoint:
+# "http://host:8080", ".../v1/" or ".../v1/chat/completions" -> "http://host:8080/v1"
 normalize_lmr_url() {
     local url="${1%/}"
-    [[ "$url" == */v1 ]] || url="$url/v1"
-    echo "$url"
+    url="${url%/chat/completions}"
+    url="${url%/models}"
+    url="${url%/v1}"
+    echo "$url/v1"
 }
 
 # Rewritten on every boot so add-on options always win. LMR is the only
@@ -37,6 +40,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" && "$1" == "--test" ]]; then
     [ "$(normalize_lmr_url http://h:8080)" = "http://h:8080/v1" ]
     [ "$(normalize_lmr_url http://h:8080/)" = "http://h:8080/v1" ]
     [ "$(normalize_lmr_url http://h:8080/v1/)" = "http://h:8080/v1" ]
+    [ "$(normalize_lmr_url http://h:8080/v1/chat/completions)" = "http://h:8080/v1" ]
+    [ "$(normalize_lmr_url http://h:8080/v1/models/)" = "http://h:8080/v1" ]
     f=$(mktemp)
     LMR_API_KEY=lmr_secret write_opencode_config "$f" "http://h:8080/v1" auto
     [ "$(jq -r .provider.lmr.options.baseURL "$f")" = "http://h:8080/v1" ]
