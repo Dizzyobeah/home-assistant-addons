@@ -4,7 +4,8 @@
 
 # Rewritten on every boot so add-on options always win. API-key auth skips the
 # login dialog, folder trust is off so /config opens without a prompt, and
-# usage statistics and auto-update are off.
+# usage statistics and auto-update are off. Interactive shell is off: node-pty
+# has no musl build and segfaults (signal 11) on Alpine; child_process is used.
 # usage: write_gemini_settings <file> <model>
 write_gemini_settings() {
     local file="$1" model="$2"
@@ -15,7 +16,8 @@ write_gemini_settings() {
             folderTrust: { enabled: false }
         },
         general: { enableAutoUpdate: false, enableAutoUpdateNotification: false },
-        privacy: { usageStatisticsEnabled: false }
+        privacy: { usageStatisticsEnabled: false },
+        tools: { shell: { enableInteractiveShell: false } }
     }' > "$file"
 }
 
@@ -47,6 +49,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" && "$1" == "--test" ]]; then
     GEMINI_API_KEY=gemini_secret SUPERVISOR_TOKEN=sup_secret write_gemini_settings "$f" gemini-flash-latest
     [ "$(jq -r .model.name "$f")" = "gemini-flash-latest" ]
     [ "$(jq -r .security.auth.selectedType "$f")" = "gemini-api-key" ]
+    [ "$(jq -r .tools.shell.enableInteractiveShell "$f")" = "false" ]
     SUPERVISOR_TOKEN=sup_secret add_ha_mcp "$f" 7.11.0
     [ "$(jq -r '.mcpServers["home-assistant"].args[-1]' "$f")" = "ha-mcp@7.11.0" ]
     # The sh -c script must receive the package as $0, not inline
