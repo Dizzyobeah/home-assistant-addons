@@ -35,6 +35,13 @@ Measured idle: Gemini CLI ~180 MB, ha-mcp ~180 MB more. The first launch
 briefly needs ~400 MB extra while it installs ha-mcp. On a 2 GB Raspberry Pi
 that is fine; if memory is still tight, set `enable_ha_mcp: false`.
 
+## Shell commands
+
+Gemini CLI's interactive shell (node-pty) is turned off, because node-pty has
+no build for Alpine's musl and crashed the session (signal 11) on every shell
+command. Commands still run, but without a pseudo-terminal: interactive
+programs (`vim`, prompts that wait for input) won't work inside a tool call.
+
 ## Privacy and cost
 
 Your prompts, plus whatever files, logs and entity states the agent reads, are
