@@ -160,6 +160,7 @@ start_web_terminal() {
         --port "${port}" \
         --interface 0.0.0.0 \
         --writable \
+        --index /opt/ttyd/index.html \
         --ping-interval 30 \
         --client-option enableReconnect=true \
         --client-option reconnect=10 \

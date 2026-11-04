@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2
+
+- Paste from your clipboard now works. On Windows and Linux, Ctrl+V pastes
+  (it used to do nothing). Cmd+V on macOS and Ctrl+Shift+V keep working.
+- Right-click opens the browser's menu with **Paste**, instead of tmux's pane
+  menu.
+
 ## 0.2.1
 
 - Fix: shell commands from the agent no longer crash the session (signal 11).

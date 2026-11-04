@@ -35,6 +35,14 @@ Measured idle: Gemini CLI ~180 MB, ha-mcp ~180 MB more. The first launch
 briefly needs ~400 MB extra while it installs ha-mcp. On a 2 GB Raspberry Pi
 that is fine; if memory is still tight, set `enable_ha_mcp: false`.
 
+## Copy and paste
+
+- **Paste:** Ctrl+V or Ctrl+Shift+V on Windows and Linux, Cmd+V on macOS, or
+  right-click → **Paste**. Ctrl+V therefore no longer sends a literal `^V`
+  to the terminal (e.g. vim's block select); use Ctrl+Q in vim instead.
+- **Copy:** hold Shift while dragging to select; the selection is copied to
+  your clipboard.
+
 ## Shell commands
 
 Gemini CLI's interactive shell (node-pty) is turned off, because node-pty has

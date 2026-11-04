@@ -43,4 +43,15 @@ COPY run.sh /run.sh
 COPY scripts/ /opt/scripts/
 RUN chmod +x /run.sh /opt/scripts/*.sh
 
+# ttyd's page with paste.js appended (served via --index). The page is
+# compiled into the ttyd binary, so fetch it from a throwaway instance.
+RUN mkdir -p /opt/ttyd \
+    && { ttyd -p 7999 true >/dev/null 2>&1 & echo $! > /tmp/ttyd.pid; } \
+    && for i in 1 2 3 4 5 6 7 8 9 10; do \
+        curl -fsS --compressed -o /opt/ttyd/index.html http://127.0.0.1:7999/ && break; sleep 1; \
+    done \
+    && kill "$(cat /tmp/ttyd.pid)" && rm /tmp/ttyd.pid \
+    && grep -q '</html>' /opt/ttyd/index.html \
+    && { printf '<script>'; cat /opt/scripts/paste.js; printf '</script>\n'; } >> /opt/ttyd/index.html
+
 CMD ["/run.sh"]
