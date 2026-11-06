@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3
+
+- Copy now works: dragging to select text in the terminal copies it to your
+  clipboard (before, you had to hold Shift). Text the agent copies reaches
+  your clipboard as well.
+
 ## 0.2.2
 
 - Paste from your clipboard now works. On Windows and Linux, Ctrl+V pastes

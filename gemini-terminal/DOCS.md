@@ -40,8 +40,9 @@ that is fine; if memory is still tight, set `enable_ha_mcp: false`.
 - **Paste:** Ctrl+V or Ctrl+Shift+V on Windows and Linux, Cmd+V on macOS, or
   right-click → **Paste**. Ctrl+V therefore no longer sends a literal `^V`
   to the terminal (e.g. vim's block select); use Ctrl+Q in vim instead.
-- **Copy:** hold Shift while dragging to select; the selection is copied to
-  your clipboard.
+- **Copy:** just drag to select; the text is copied to your clipboard when you
+  release. Holding Shift while dragging (browser selection, then Ctrl/Cmd+C)
+  also works. Text copied by the agent itself lands in your clipboard too.
 
 ## Shell commands
 
